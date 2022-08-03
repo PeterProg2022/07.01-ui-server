@@ -83,7 +83,7 @@ class IssueAdd extends React.Component {
 
 async function graphQLFetch(query, variables = {}) {
   try {
-    const response = await fetch('http://localhost:4000/graphql', {
+    const response = await fetch('https://07-01-api.vercel.app/', {     // http://localhost:4000/graphql', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json'},
       body: JSON.stringify({ query, variables })
