@@ -1,7 +1,25 @@
-# Pro MERN Stack - 2nd Edition
+07.01-ui-server angepasst damit es auf vercel läuft.
 
-You are browsing the source code at the end of one of the sections in the book.
+vercel settings:
+	zwei deploys:
+	api
+		Build & Development Settings
+			alle ovverride mit ''
+		Root Directory:
+			api
+			Include source files outside of the Root Directory in the Build Step: no
+	ui
+		Build & Development Settings
+			build command: npm run compile
+		Root Directory:
+			ui
+			Include source files outside of the Root Directory in the Build Step: no (egal)
 
-The project's README which contains the list of all chapters, sections
-their sources and other useful information can be found in the
-[master branch](https://github.com/vasansr/pro-mern-stack-2).
+verwendung
+	remote:	https://07-01-ui-server.vercel.app/
+	local:
+		ui
+			npm run compile
+			npm run start
+		api
+			npm run start
