@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon -e js,graphql server.js",
+    "start": "nodemon -e js,api/graphql api/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

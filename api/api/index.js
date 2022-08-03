@@ -132,7 +132,7 @@ import { readFileSync } from 'fs';
 
 async function startApolloServer(app, httpServer) {
   const server = new ApolloServer({
-      typeDefs: readFileSync( path.join(process.cwd(), '' , 'schema.graphql') , 'utf8'),
+      typeDefs: readFileSync( path.join(process.cwd(), 'api' , 'schema.graphql') , 'utf8'),
       resolvers,
       csrfPrevention: true,
       cache: 'bounded',
