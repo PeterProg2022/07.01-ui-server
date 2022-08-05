@@ -147,7 +147,7 @@ import { readFileSync } from 'fs';
 async function startApolloServer(app, httpServer) {
 
   try {
-      await connectToDb();
+//       await connectToDb();
 
       const server = new ApolloServer({
           typeDefs: readFileSync( path.join(process.cwd(), 'api' , 'schema.graphql') , 'utf8'),
