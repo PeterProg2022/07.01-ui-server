@@ -4,26 +4,28 @@
 // const { GraphQLScalarType } = require('graphql');
 // const { Kind } = require('graphql/language');
 // const { MongoClient } = require('mongodb');
+import { MongoClient } from 'mongodb';
 
 let aboutMessage = "return aboutMessage()";
 
 // ===== MongoDB ===========
 
-// const url = 'mongodb://localhost/issuetracker';
-// let db;
+const url = 'mongodb+srv://issuetracker_user:2erllKuWsYj8e5Rr@cluster0.qxehy0z.mongodb.net/issue_tracker?retryWrites=true&w=majority';
+// Atlas URL  - replace UUU with user, PPP with password, XXX with hostname
+// const url = 'mongodb+srv://UUU:PPP@cluster0-XXX.mongodb.net/issuetracker?retryWrites=true';
+//
+// mLab URL - replace UUU with user, PPP with password, XXX with hostname
+// const url = 'mongodb://UUU:PPP@XXX.mlab.com:33533/issuetracker';
 
-/*async function connectToDb() {
+let db;
+
+async function connectToDb() {
   const client = new MongoClient(url, { useNewUrlParser: true });
   await client.connect();
   console.log('Connected to MongoDB at', url);
   db = client.db();
-}*/
+}
 
-// Atlas URL  - replace UUU with user, PPP with password, XXX with hostname
-// const url = 'mongodb+srv://UUU:PPP@cluster0-XXX.mongodb.net/issuetracker?retryWrites=true';
-
-// mLab URL - replace UUU with user, PPP with password, XXX with hostname
-// const url = 'mongodb://UUU:PPP@XXX.mlab.com:33533/issuetracker';
 
 
 // ===== GraphQL ===========
@@ -63,8 +65,8 @@ const resolvers = {
 }*/
 
 async function issueList() {
-  const issues = //await db.collection('issues').find({}).toArray();
-      [
+  const issues = await db.collection('issues').find({}).toArray();
+/*      [
         {
           id: 1, status: 'New', owner: 'Ravan', effort: 5,
           created: new Date('2019-01-15'), due: undefined,
@@ -75,7 +77,7 @@ async function issueList() {
           created: new Date('2019-01-16'), due: new Date('2019-02-01'),
           title: 'Missing bottom border on panel',
         },
-      ];
+      ];*/
   return issues;
 }
 
@@ -143,20 +145,26 @@ import path from 'path';
 import { readFileSync } from 'fs';
 
 async function startApolloServer(app, httpServer) {
-  const server = new ApolloServer({
-      typeDefs: readFileSync( path.join(process.cwd(), 'api' , 'schema.graphql') , 'utf8'),
-      resolvers,
-      csrfPrevention: true,
-      cache: 'bounded',
-      plugins: [  ApolloServerPluginDrainHttpServer         ( {httpServer} ),
-                  ApolloServerPluginLandingPageLocalDefault ( {embed: true} ),
-      ],
-  });
-  await server.start();
-  server.applyMiddleware({app});
-//   await new Promise<void>(resolve => httpServer.listen({ port: 4000 }, resolve));
-  await new Promise(resolve => httpServer.listen({ port: 4000 }, resolve));
-  console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`);
+
+  try {
+      await connectToDb();
+
+      const server = new ApolloServer({
+          typeDefs: readFileSync( path.join(process.cwd(), 'api' , 'schema.graphql') , 'utf8'),
+          resolvers,
+          csrfPrevention: true,
+          cache: 'bounded',
+          plugins: [  ApolloServerPluginDrainHttpServer         ( {httpServer} ),
+                      ApolloServerPluginLandingPageLocalDefault ( {embed: true} ),
+          ],
+      });
+      await server.start();
+      server.applyMiddleware({app});
+    //   await new Promise<void>(resolve => httpServer.listen({ port: 4000 }, resolve));
+      await new Promise(resolve => httpServer.listen({ port: 4000 }, resolve));
+      console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`);
+
+  } catch (err)                   { console.log('ERROR:', err); }
 }
 
 
