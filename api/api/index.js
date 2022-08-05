@@ -2,6 +2,7 @@
 // const express = require('express');
 // const { ApolloServer, UserInputError } = require('apollo-server-express');
 // const { GraphQLScalarType } = require('graphql');
+import { GraphQLScalarType } from 'graphql';
 // const { Kind } = require('graphql/language');
 // const { MongoClient } = require('mongodb');
 import { MongoClient } from 'mongodb';
@@ -31,7 +32,7 @@ async function connectToDb() {
 
 // ===== GraphQL ===========
 
-/*const GraphQLDate = new GraphQLScalarType({
+const GraphQLDate = new GraphQLScalarType({
   name: 'GraphQLDate',
   description: 'A Date() type in GraphQL as a scalar',
   serialize(value) {
@@ -47,51 +48,39 @@ async function connectToDb() {
       return isNaN(value) ? undefined : value;
     }
   },
-});*/
+});
 
 const resolvers = {
   Query: {
     about: () => aboutMessage,
     issueList,
   },
-//   Mutation: {
-//     setAboutMessage,
-//     issueAdd,
-//   },
-//   GraphQLDate,
+  Mutation: {
+    setAboutMessage,
+    issueAdd,
+  },
+  GraphQLDate,
 };
 
-/*function setAboutMessage(_, { message }) {
+function setAboutMessage(_, { message }) {
   return aboutMessage = message;
-}*/
+}
 
 async function issueList() {
   const issues = await db.collection('issues').find({}).toArray();
-/*      [
-        {
-          id: 1, status: 'New', owner: 'Ravan', effort: 5,
-          created: new Date('2019-01-15'), due: undefined,
-          title: 'Error in console when clicking Add',
-        },
-        {
-          id: 2, status: 'Assigned', owner: 'Eddie', effort: 14,
-          created: new Date('2019-01-16'), due: new Date('2019-02-01'),
-          title: 'Missing bottom border on panel',
-        },
-      ];*/
   return issues;
 }
 
-/*async function getNextSequence(name) {
+async function getNextSequence(name) {
   const result = await db.collection('counters').findOneAndUpdate(
     { _id: name },
     { $inc: { current: 1 } },
     { returnOriginal: false },
   );
   return result.value.current;
-}*/
+}
 
-/*function issueValidate(issue) {
+function issueValidate(issue) {
   const errors = [];
   if (issue.title.length < 3) {
     errors.push('Field "title" must be at least 3 characters long.');
@@ -102,9 +91,9 @@ async function issueList() {
   if (errors.length > 0) {
     throw new UserInputError('Invalid input(s)', { errors });
   }
-}*/
+}
 
-/*async function issueAdd(_, { issue }) {
+async function issueAdd(_, { issue }) {
   issueValidate(issue);
   issue.created = new Date();
   issue.id = await getNextSequence('issues');
@@ -113,7 +102,7 @@ async function issueList() {
   const savedIssue = await db.collection('issues')
     .findOne({ _id: result.insertedId });
   return savedIssue;
-}*/
+}
 
 
 // ===== Server ===========
@@ -161,10 +150,9 @@ async function startApolloServer(app, httpServer) {
       });
       await server.start();
       server.applyMiddleware({app});
-    //   await new Promise<void>(resolve => httpServer.listen({ port: 4000 }, resolve));
+    //await new Promise<void>(resolve => httpServer.listen({ port: 4000 }, resolve));
       await new Promise(resolve => httpServer.listen({ port: 4000 }, resolve));
       console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`);
-
   } catch (err)                   { console.log('ERROR:', err); }
 }
 

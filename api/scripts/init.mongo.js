@@ -27,11 +27,6 @@ const issuesDB = [
     created: new Date('2019-01-16'), due: new Date('2019-02-01'),
     title: 'Missing bottom border on panel',
   },
-  {
-    id: 4, status: 'Assigned', owner: 'Eddie', effort: 14,
-    created: new Date('2019-01-16'), due: new Date('2019-02-01'),
-    title: 'Missing bottom border on panel',
-  },
 ];
 
 db.issues.insertMany(issuesDB);
